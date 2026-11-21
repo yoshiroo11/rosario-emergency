@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Diagnose</title>
+<style>
+body { font-family: Arial, sans-serif; max-width: 700px; margin: 20px auto; padding: 0 14px; background: #f1f5f9; color: #172033; }
+h1 { font-size: 20px; }
+.step { background: white; border-radius: 8px; padding: 10px 12px; margin: 8px 0; font-size: 14px; overflow-wrap: anywhere; }
+.ok { border-left: 6px solid #16a34a; }
+.bad { border-left: 6px solid #dc2626; background: #fef2f2; }
+.wait { border-left: 6px solid #f59e0b; }
+code { background: #e2e8f0; padding: 1px 4px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<h1>Firebase Diagnose</h1>
+<div id="out"></div>
+
+<script src="firebase-config.js"></script>
+<script>
+window.addEventListener("error", function (e) {
+    if (e.filename && e.filename.indexOf("backend.js") !== -1) {
+        window.__backendError = e.message + " (line " + e.lineno + ")";
+    }
+});
+</script>
+<script src="backend.js"></script>
+<script>
+const out = document.getElementById("out");
+
+function add(cls, text) {
+    const d = document.createElement("div");
+    d.className = "step " + cls;
+    d.textContent = text;
+    out.appendChild(d);
+    return d;
+}
+
+function withTimeout(promise, ms, label) {
+    return Promise.race([
+        promise,
+        new Promise((_, rej) => setTimeout(() => rej(new Error(label + " did not answer in " + (ms / 1000) + "s")), ms))
+    ]);
+}
+
+(async () => {
+    const cfg = window.FIREBASE_CONFIG;
+
+    if (!cfg) {
+        add("bad", "1. firebase-config.js was NOT loaded (window.FIREBASE_CONFIG is missing). Check that the file is in the repo root.");
+        return;
+    }
+    add("ok", "1. firebase-config.js loaded. projectId = " + cfg.projectId);
+
+    if (JSON.stringify(cfg).includes("PASTE_")) {
+        add("bad", "2. The config still has PASTE_ placeholders. Upload the real firebase-config.js.");
+        return;
+    }
+    add("ok", "2. Config has real values.");
+
+    let appMod, authMod, fsMod;
+    try {
+        const base = "https://www.gstatic.com/firebasejs/10.12.2/";
+        appMod = await withTimeout(import(base + "firebase-app.js"), 10000, "firebase-app.js");
+        authMod = await withTimeout(import(base + "firebase-auth.js"), 10000, "firebase-auth.js");
+        fsMod = await withTimeout(import(base + "firebase-firestore.js"), 10000, "firebase-firestore.js");
+        add("ok", "3. Firebase libraries downloaded from Google.");
+    } catch (e) {
+        add("bad", "3. Could NOT download the Firebase libraries: " + e.message + ". Something is blocking gstatic.com (Brave Shields, adblock, school/office network, or no internet).");
+        return;
+    }
+
+    let app, auth, db;
+    try {
+        app = appMod.initializeApp(cfg, "diag");
+        auth = authMod.getAuth(app);
+        db = fsMod.initializeFirestore(app, { experimentalForceLongPolling: true });
+        add("ok", "4. Firebase started.");
+    } catch (e) {
+        add("bad", "4. Firebase could not start: " + e.message);
+        return;
+    }
+
+    try {
+        const user = await withTimeout(new Promise(res => {
+            const off = authMod.onAuthStateChanged(auth, u => { off(); res(u); });
+        }), 8000, "Auth");
+        add("ok", "5. Auth is working. " + (user ? "Signed in as " + user.email : "Not signed in (normal)."));
+    } catch (e) {
+        add("bad", "5. Auth is stuck: " + e.message + ". Usually the browser blocks storage or the Auth service. Try Chrome in a normal window.");
+    }
+
+    const wait = add("wait", "6. Sending a TEST report to Firestore...");
+    try {
+        const ref = await withTimeout(fsMod.addDoc(fsMod.collection(db, "reports"), {
+            type: "MEDICAL",
+            label: "MEDICAL EMERGENCY",
+            person: "DIAGNOSE TEST",
+            phone: "0000000",
+            place: "Test only - delete me",
+            channel: "TEST",
+            map: null,
+            status: "waiting",
+            handler: "",
+            createdAt: fsMod.serverTimestamp()
+        }), 15000, "Firestore");
+        wait.className = "step ok";
+        wait.textContent = "6. TEST report saved. id = " + ref.id + ". Sending works! Delete it later in the admin dashboard.";
+    } catch (e) {
+        wait.className = "step bad";
+        let hint = "";
+        const code = e && e.code;
+        if (code === "permission-denied") {
+            hint = " -> The rules rejected it. Re-publish the rules in Firebase > Firestore Database > Rules.";
+        } else if (code === "unavailable" || /did not answer/.test(e.message)) {
+            hint = " -> Cannot reach Firestore. Check that the Firestore Database was created (Firebase > Firestore Database > Create database), and that no blocker is active.";
+        } else if (code === "not-found") {
+            hint = " -> The Firestore database does not exist yet. Create it in Firebase > Firestore Database.";
+        }
+        wait.textContent = "6. FAILED. code = " + (code || "none") + ", message = " + e.message + hint;
+    }
+
+    // ---- Test the real backend.js the way the emergency page uses it ----
+    if (window.__backendError) {
+        add("bad", "7. backend.js has an error: " + window.__backendError + " -> the backend.js on GitHub is broken. Re-upload it.");
+        return;
+    }
+    if (!window.Backend) {
+        add("bad", "7. backend.js did not load or is broken (Backend is missing). Open /rosario-emergency/backend.js in your browser: it must show the code starting with (function () { . Re-upload it if it does not.");
+        return;
+    }
+    add("ok", "7. backend.js loaded. mode = " + window.Backend.mode);
+
+    const w8 = add("wait", "8. Sending a TEST report through backend.js (with GPS link)...");
+    try {
+        const r = await window.Backend.submitReport({
+            type: "FIRE",
+            label: "FIRE ALARM",
+            person: "DIAGNOSE TEST 2",
+            phone: "0000000",
+            place: "Test only - delete me",
+            channel: "TEST",
+            map: "https://www.google.com/maps?q=14.599512,120.984222"
+        });
+        w8.className = "step " + (r.queued ? "bad" : "ok");
+        w8.textContent = r.queued
+            ? "8. Not confirmed after 15s (queued). Connection to Firestore is slow or blocked."
+            : "8. Report with GPS link saved through backend.js. id = " + r.id + ". Emergency page should work now.";
+    } catch (e) {
+        w8.className = "step bad";
+        const code = e && e.code;
+        w8.textContent = "8. FAILED through backend.js. code = " + (code || "none") + ", message = " + e.message +
+            (code === "permission-denied" ? " -> The rules reject something in the report (probably the map link format)." : "");
+    }
+})();
+</script>
+</body>
+</html>
