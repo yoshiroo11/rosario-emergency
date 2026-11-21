@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Emergency Dashboard — Rosario (Student Concept)</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: #edf2f7;
+    color: #172033;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background: #172554;
+    color: white;
+    text-align: center;
+    padding: 20px 12px;
+}
+header h1 { font-size: 22px; margin: 0 0 6px; }
+header p { font-size: 13px; margin: 0; min-height: 18px; }
+header button {
+    margin-top: 10px;
+    background: transparent;
+    color: white;
+    border: 1px solid #ffffff80;
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+header button:hover { background: #ffffff25; }
+
+main { max-width: 700px; margin: auto; padding: 14px; }
+
+.banner {
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.banner.demo { background: #fef3c7; color: #92400e; }
+.banner.new  { background: #fee2e2; color: #991b1b; font-size: 14px; }
+
+.card {
+    background: #dff5e6;
+    padding: 18px;
+    border-radius: 14px;
+    margin-bottom: 15px;
+    box-shadow: 0 3px 12px #0000000d;
+}
+h2 { font-size: 18px; margin-top: 0; }
+
+button {
+    border: 0;
+    border-radius: 8px;
+    padding: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+button:disabled { opacity: 0.6; cursor: wait; }
+.blue { background: #1d4ed8; color: white; }
+.green { background: #15803d; color: white; }
+.gray { background: #e2e8f0; color: #172033; }
+.amber { background: #d97706; color: white; }
+.full { width: 100%; }
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    margin: 7px 0 13px;
+    font-size: 15px;
+    background: white;
+}
+label { font-size: 13px; font-weight: bold; }
+
+.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    margin: 0 0 12px;
+}
+
+/* ---------- Summary tiles ---------- */
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.tile {
+    border-radius: 12px;
+    padding: 14px 8px;
+    text-align: center;
+    font-family: inherit;
+    box-shadow: 0 3px 12px #0000000d;
+}
+.tile .num { display: block; font-size: 30px; font-weight: bold; line-height: 1.1; }
+.tile .lbl { display: block; font-size: 12px; font-weight: bold; margin-top: 4px; }
+.tile.waiting { background: #fef3c7; color: #92400e; }
+.tile.ongoing { background: #dbeafe; color: #1e40af; }
+.tile.done    { background: #bbf7d0; color: #166534; }
+
+/* ---------- Reports board ---------- */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.tab {
+    background: #ffffff;
+    color: #172033;
+    border: 2px solid #cbd5e1;
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 13px;
+}
+.tab.active { background: #126b43; border-color: #126b43; color: white; }
+
+.report {
+    background: #ffffff;
+    border-left: 6px solid #94a3b8;
+    border-radius: 10px;
+    padding: 14px;
+    margin: 10px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+.report.waiting { border-left-color: #f59e0b; }
+.report.ongoing { border-left-color: #2563eb; }
+.report.done    { border-left-color: #16a34a; }
+
+.report .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+.report .type { font-size: 15px; font-weight: bold; }
+.badge {
+    border-radius: 999px;
+    padding: 3px 11px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.badge.waiting { background: #fef3c7; color: #92400e; }
+.badge.ongoing { background: #dbeafe; color: #1e40af; }
+.badge.done    { background: #dcfce7; color: #166534; }
+
+.report .queue { color: #92400e; font-weight: bold; }
+.report .row { color: #334155; }
+.report .row b { color: #172033; }
+.report a { color: #1d4ed8; }
+.report .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.report .actions button { padding: 8px 14px; font-size: 13px; }
+
+.empty { color: #64748b; font-size: 14px; padding: 8px 0; }
+
+footer {
+    text-align: center;
+    color: #64748b;
+    padding: 20px;
+    font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+<header>
+    <h1>🛡 Emergency Dashboard</h1>
+    <p id="who">Rosario, Cavite — Response Center</p>
+    <button id="logoutBtn" type="button" hidden>Log out</button>
+</header>
+
+<main>
+
+<div id="modeBanner" class="banner demo" hidden>
+    DEMO MODE — Firebase is not set up yet. No login is required and reports
+    are stored on this device only.
+</div>
+
+<div id="loading" class="card">Loading...</div>
+
+<section id="loginCard" class="card" hidden>
+    <h2>Admin Log in</h2>
+    <p id="loginError" class="error" role="alert" hidden></p>
+    <form id="loginForm">
+        <label for="email">Email</label>
+        <input id="email" type="email" required autocomplete="username">
+
+        <label for="password">Password</label>
+        <input id="password" type="password" required autocomplete="current-password">
+
+        <button id="loginBtn" type="submit" class="green full">Log in</button>
+    </form>
+</section>
+
+<section id="deniedCard" class="card" hidden>
+    <h2>Not authorized</h2>
+    <p id="deniedText">This account is not allowed to view emergency reports.</p>
+</section>
+
+<div id="dash" hidden>
+
+    <div id="newBanner" class="banner new" role="alert" hidden></div>
+
+    <div class="summary" aria-label="Report summary">
+        <button class="tile waiting" type="button" onclick="showTab('waiting')">
+            <span class="num" id="countWaiting">0</span>
+            <span class="lbl">WAITING</span>
+        </button>
+        <button class="tile ongoing" type="button" onclick="showTab('ongoing')">
+            <span class="num" id="countOngoing">0</span>
+            <span class="lbl">ON-GOING</span>
+        </button>
+        <button class="tile done" type="button" onclick="showTab('done')">
+            <span class="num" id="countDone">0</span>
+            <span class="lbl">DONE</span>
+        </button>
+    </div>
+
+    <section class="card" id="board">
+        <h2>📋 Emergency Reports &amp; History</h2>
+
+        <div class="tabs" role="tablist">
+            <button class="tab active" type="button" data-tab="all" onclick="showTab('all')">All (<span id="tabAll">0</span>)</button>
+            <button class="tab" type="button" data-tab="waiting" onclick="showTab('waiting')">Waiting (<span id="tabWaiting">0</span>)</button>
+            <button class="tab" type="button" data-tab="ongoing" onclick="showTab('ongoing')">On-going (<span id="tabOngoing">0</span>)</button>
+            <button class="tab" type="button" data-tab="done" onclick="showTab('done')">Done (<span id="tabDone">0</span>)</button>
+        </div>
+
+        <div id="reports"></div>
+
+        <button class="gray full" type="button" onclick="clearDone()">
+            Clear Done Reports
+        </button>
+    </section>
+</div>
+
+</main>
+
+<footer>
+    Rosario Emergency Dashboard — student concept project<br>
+    For authorized response staff only.
+</footer>
+
+<script src="firebase-config.js"></script>
+<script src="backend.js"></script>
+<script>
+let reports = [];
+let currentTab = "all";
+let unsubscribe = null;
+let bannerTimer = null;
+
+const BASE_TITLE = "Emergency Dashboard — Rosario (Student Concept)";
+
+const ALERT_ICONS = {
+    MEDICAL: "🚑",
+    FIRE: "🔥",
+    WATER: "🏊",
+    SECURITY: "🛡",
+    ACCIDENT: "🚗",
+    CRIME: "🚓",
+    FLOOD: "🌊",
+    RIOT: "🛡",
+    SEXUAL: "🙅",
+    OTHER: "⚙️"
+};
+
+const STATUS_LABEL = {
+    waiting: "Waiting",
+    ongoing: "On-going",
+    done: "Done"
+};
+
+const $ = id => document.getElementById(id);
+
+/* ---------- Small helpers ---------- */
+function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+}
+
+function row(label, value) {
+    const div = el("div", "row");
+    div.append(el("b", "", label + ": "), document.createTextNode(value));
+    return div;
+}
+
+function actionButton(text, cls, handler) {
+    const b = el("button", cls, text);
+    b.type = "button";
+    b.addEventListener("click", handler);
+    return b;
+}
+
+function fmtTime(ms) {
+    return ms ? new Date(ms).toLocaleString() : "—";
+}
+
+function fmtDuration(ms) {
+    const mins = Math.round(ms / 60000);
+    if (mins < 1) return "less than 1 min";
+    if (mins < 60) return mins + " min";
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return h + " h" + (m ? " " + m + " min" : "");
+}
+
+// Reports come from the public, so every link is checked before it is shown.
+function safeMap(url) {
+    return typeof url === "string" &&
+        /^https:\/\/www\.google\.com\/maps\?q=-?\d{1,3}(\.\d+)?,-?\d{1,3}(\.\d+)?$/.test(url)
+        ? url : null;
+}
+
+function safePhone(phone) {
+    return typeof phone === "string" && /^[0-9+\-\s()]{5,40}$/.test(phone)
+        ? phone.replace(/[^0-9+]/g, "") : null;
+}
+
+/* ---------- Screens ---------- */
+function show(which) {
+    $("loading").hidden = which !== "loading";
+    $("loginCard").hidden = which !== "login";
+    $("deniedCard").hidden = which !== "denied";
+    $("dash").hidden = which !== "dash";
+}
+
+function showLoginError(text) {
+    const box = $("loginError");
+    box.textContent = text;
+    box.hidden = !text;
+}
+
+/* ---------- Login ---------- */
+$("loginForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    showLoginError("");
+    $("loginBtn").disabled = true;
+
+    try {
+        await Backend.signIn($("email").value.trim(), $("password").value);
+        $("password").value = "";
+    } catch (e) {
+        const code = e && e.code;
+        let msg = "Log in failed. Please try again.";
+
+        if (["auth/invalid-credential", "auth/wrong-password",
+             "auth/user-not-found", "auth/invalid-email"].includes(code)) {
+            msg = "Wrong email or password.";
+        } else if (code === "auth/too-many-requests") {
+            msg = "Too many attempts. Please wait a few minutes and try again.";
+        } else if (code === "auth/network-request-failed") {
+            msg = "No internet connection.";
+        }
+        showLoginError(msg);
+    } finally {
+        $("loginBtn").disabled = false;
+    }
+});
+
+$("logoutBtn").addEventListener("click", () => {
+    Backend.signOut();
+});
+
+/* ---------- Live feed ---------- */
+async function startFeed() {
+    if (unsubscribe) return;
+
+    try {
+        unsubscribe = await Backend.subscribe(onData, onFeedError);
+    } catch (e) {
+        show("denied");
+        $("deniedText").textContent = "Could not load reports. Check your internet connection and reload the page.";
+    }
+}
+
+function stopFeed() {
+    if (unsubscribe) {
+        try { unsubscribe(); } catch (e) {}
+        unsubscribe = null;
+    }
+    reports = [];
+    document.title = BASE_TITLE;
+}
+
+function onFeedError(err) {
+    stopFeed();
+    show("denied");
+    $("deniedText").textContent = err && err.code === "permission-denied"
+        ? "This account is not allowed to view emergency reports."
+        : "Could not load reports. Check your internet connection and reload the page.";
+}
+
+function onData(list, added) {
+    reports = list;
+    render();
+
+    if (added.length) {
+        const r = list.find(x => x.id === added[0]);
+        if (r) announce(r);
+    }
+}
+
+function announce(r) {
+    const banner = $("newBanner");
+    banner.textContent = "🔔 New report: " + r.label + " — " + r.place;
+    banner.hidden = false;
+
+    clearTimeout(bannerTimer);
+    bannerTimer = setTimeout(() => { banner.hidden = true; }, 10000);
+
+    try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new Ctx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = 880;
+        gain.gain.value = 0.15;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        setTimeout(() => { osc.stop(); ctx.close(); }, 600);
+    } catch (e) {}
+}
+
+/* ---------- Status changes ---------- */
+async function run(action) {
+    try {
+        await action();
+    } catch (e) {
+        alert("That change could not be saved. Check your connection and try again.");
+    }
+}
+
+function setStatus(r, status) {
+    if (status === "ongoing" && r.status === "waiting") {
+        const who = prompt("Responder / team assigned (optional):", r.handler || "");
+        if (who === null) return;
+        return run(() => Backend.update(r.id, {
+            status: "ongoing",
+            handler: who.trim().slice(0, 100),
+            startedAt: "now",
+            doneAt: null
+        }));
+    }
+    if (status === "ongoing") {
+        return run(() => Backend.update(r.id, { status: "ongoing", doneAt: null }));
+    }
+    if (status === "done") {
+        return run(() => Backend.update(r.id, { status: "done", doneAt: "now" }));
+    }
+    return run(() => Backend.update(r.id, {
+        status: "waiting",
+        handler: "",
+        startedAt: null,
+        doneAt: null
+    }));
+}
+
+function removeReport(r) {
+    if (!confirm("Delete this " + r.label + " report?")) return;
+    run(() => Backend.remove(r.id));
+}
+
+async function clearDone() {
+    const done = reports.filter(r => r.status === "done");
+    if (!done.length) {
+        alert("There are no Done reports to clear.");
+        return;
+    }
+    if (!confirm("Delete " + done.length + " Done report(s)?")) return;
+
+    run(async () => {
+        for (const r of done) await Backend.remove(r.id);
+    });
+}
+
+/* ---------- Board ---------- */
+function showTab(tab) {
+    currentTab = tab;
+    render();
+    $("board").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function buildCard(r, queuePos) {
+    const card = el("div", "report " + r.status);
+
+    const top = el("div", "top");
+    top.append(
+        el("span", "type", (ALERT_ICONS[r.type] || "🚨") + " " + r.label),
+        el("span", "badge " + r.status, STATUS_LABEL[r.status])
+    );
+    card.append(top);
+
+    if (r.status === "waiting") {
+        card.append(el("div", "queue", "Waiting list: #" + queuePos + " in line"));
+    }
+
+    card.append(row("Reported", fmtTime(r.createdAt)));
+    card.append(row("Reporter", r.person));
+
+    const phoneRow = el("div", "row");
+    phoneRow.append(el("b", "", "Contact: "));
+    const tel = safePhone(r.phone);
+    if (tel) {
+        const a = el("a", "", r.phone);
+        a.href = "tel:" + tel;
+        phoneRow.append(a);
+    } else {
+        phoneRow.append(document.createTextNode(r.phone));
+    }
+    card.append(phoneRow);
+
+    card.append(row("Location", r.place));
+    card.append(row("Radio channel", r.channel));
+
+    const gps = el("div", "row");
+    gps.append(el("b", "", "GPS: "));
+    const map = safeMap(r.map);
+    if (map) {
+        const a = el("a", "", "Open map");
+        a.href = map;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        gps.append(a);
+    } else {
+        gps.append(document.createTextNode("GPS unavailable"));
+    }
+    card.append(gps);
+
+    if (r.status !== "waiting") {
+        card.append(row("Responder", r.handler || "Not specified"));
+        card.append(row("Response started", fmtTime(r.startedAt)));
+    }
+    if (r.status === "done") {
+        card.append(row("Completed", fmtTime(r.doneAt)));
+        if (r.doneAt && r.createdAt) {
+            card.append(row("Total time", fmtDuration(r.doneAt - r.createdAt)));
+        }
+    }
+
+    const actions = el("div", "actions");
+    if (r.status === "waiting") {
+        actions.append(
+            actionButton("▶ Start response", "blue", () => setStatus(r, "ongoing")),
+            actionButton("Delete", "gray", () => removeReport(r))
+        );
+    } else if (r.status === "ongoing") {
+        actions.append(
+            actionButton("✔ Mark as done", "green", () => setStatus(r, "done")),
+            actionButton("Back to waiting", "amber", () => setStatus(r, "waiting")),
+            actionButton("Delete", "gray", () => removeReport(r))
+        );
+    } else {
+        actions.append(
+            actionButton("Reopen", "amber", () => setStatus(r, "ongoing")),
+            actionButton("Delete", "gray", () => removeReport(r))
+        );
+    }
+    card.append(actions);
+
+    return card;
+}
+
+function render() {
+    const counts = { waiting: 0, ongoing: 0, done: 0 };
+    reports.forEach(r => { if (counts[r.status] !== undefined) counts[r.status]++; });
+
+    $("countWaiting").textContent = counts.waiting;
+    $("countOngoing").textContent = counts.ongoing;
+    $("countDone").textContent = counts.done;
+    $("tabAll").textContent = reports.length;
+    $("tabWaiting").textContent = counts.waiting;
+    $("tabOngoing").textContent = counts.ongoing;
+    $("tabDone").textContent = counts.done;
+
+    document.title = (counts.waiting ? "(" + counts.waiting + ") " : "") + BASE_TITLE;
+
+    document.querySelectorAll(".tab").forEach(t => {
+        t.classList.toggle("active", t.dataset.tab === currentTab);
+    });
+
+    // Waiting list order: oldest report first.
+    const queue = reports
+        .filter(r => r.status === "waiting")
+        .sort((a, b) => a.createdAt - b.createdAt);
+
+    const rank = { ongoing: 0, waiting: 1, done: 2 };
+    const list = reports
+        .filter(r => STATUS_LABEL[r.status] && (currentTab === "all" || r.status === currentTab))
+        .sort((a, b) => {
+            if (rank[a.status] !== rank[b.status]) return rank[a.status] - rank[b.status];
+            if (a.status === "done") return (b.doneAt || 0) - (a.doneAt || 0);
+            return a.createdAt - b.createdAt;
+        });
+
+    const container = $("reports");
+    container.replaceChildren();
+
+    if (!list.length) {
+        container.append(el("div", "empty",
+            currentTab === "all"
+                ? "No incidents recorded."
+                : "No " + STATUS_LABEL[currentTab] + " reports."));
+        return;
+    }
+
+    list.forEach(r => {
+        container.append(buildCard(r, queue.indexOf(r) + 1));
+    });
+}
+
+/* ---------- Start ---------- */
+if (Backend.mode === "demo") {
+    $("modeBanner").hidden = false;
+}
+
+Backend.onAuth(user => {
+    if (user) {
+        $("who").textContent = "Signed in as " + user.email;
+        $("logoutBtn").hidden = Backend.mode === "demo";
+        show("dash");
+        render();
+        startFeed();
+    } else {
+        stopFeed();
+        $("who").textContent = "Rosario, Cavite — Response Center";
+        $("logoutBtn").hidden = true;
+        show("login");
+    }
+}).catch(() => {
+    show("denied");
+    $("deniedText").textContent = "Could not reach the login service. Check your internet connection and reload the page.";
+});
+</script>
+</body>
+</html>
