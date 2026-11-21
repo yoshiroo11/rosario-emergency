@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rosario Emergency Response — Student Concept</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f1f5fb;
+    color: #1b2433;
+}
+
+.disclaimer {
+    background: #fef3c7;
+    color: #92400e;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 9px 12px;
+}
+
+header {
+    background: #1e3a8a;
+    color: white;
+    padding: 22px 15px;
+    text-align: center;
+}
+header h1 { margin: 8px 0 4px; font-size: 24px; }
+header p { margin: 0; font-size: 14px; opacity: .9; }
+.logo { width: 92px; height: 92px; display: block; margin: 0 auto; }
+.brand { margin: 6px 0 0; font-size: 13px; letter-spacing: 3px; font-weight: bold; color: #fde68a; }
+.brand small { display: block; letter-spacing: 1px; font-size: 11px; font-weight: normal; color: #ffffffcc; margin-top: 2px; }
+
+nav {
+    background: #172554;
+    padding: 12px;
+    text-align: center;
+}
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 8px;
+    font-size: 14px;
+    display: inline-block;
+}
+nav a:hover { text-decoration: underline; }
+
+.hero {
+    text-align: center;
+    padding: 40px 15px;
+    background: #dbe7fb;
+}
+.hero h2 { color: #1e3a8a; margin-top: 0; }
+.hero p { max-width: 620px; margin: 0 auto 16px; line-height: 1.6; }
+.hero-img, .wide-img {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    display: block;
+    margin: 0 auto 18px;
+    border-radius: 16px;
+}
+
+section {
+    padding: 26px 15px;
+    max-width: 900px;
+    margin: auto;
+}
+h2 { color: #1e3a8a; }
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+}
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 3px 12px #0000000f;
+    line-height: 1.55;
+    font-size: 14px;
+}
+.card h3 { margin: 0 0 6px; font-size: 16px; color: #1e3a8a; }
+.card .icon { font-size: 30px; display: block; margin-bottom: 6px; }
+
+.emergency-section {
+    background: #fee2e2;
+    border-radius: 16px;
+    padding: 22px 16px;
+    margin: 10px 15px;
+}
+.emergency-wrap { max-width: 900px; margin: auto; }
+.emergency-section h2 { color: #991b1b; margin-top: 0; }
+.emergency-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin: 14px 0;
+}
+.etype {
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+.etype span { display: block; font-size: 30px; }
+
+.emergency-link {
+    display: inline-block;
+    background: #b91c1c;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-size: 16px;
+}
+.emergency-link:hover { background: #991b1b; }
+
+.btn {
+    display: inline-block;
+    background: #1e3a8a;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+footer {
+    background: #172554;
+    color: white;
+    text-align: center;
+    padding: 22px 15px;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+<div class="disclaimer">
+    Student concept project — this is NOT the official website of the Municipal Government of Rosario, Cavite.
+</div>
+
+<header>
+    <svg class="logo" viewBox="0 0 120 120" role="img" aria-label="Concept emblem with the letter R, waves and a sun">
+        <defs>
+            <linearGradient id="bg1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#1d4ed8"/>
+                <stop offset="1" stop-color="#1e3a8a"/>
+            </linearGradient>
+            <clipPath id="bgc"><circle cx="60" cy="60" r="52"/></clipPath>
+        </defs>
+        <circle cx="60" cy="60" r="57" fill="#ffffff"/>
+        <circle cx="60" cy="60" r="52" fill="url(#bg1)"/>
+        <g clip-path="url(#bgc)">
+            <circle cx="60" cy="40" r="14" fill="#fbbf24"/>
+            <path d="M-5 84 Q15 76 35 84 T75 84 T125 82 V130 H-5 Z" fill="#38bdf8" opacity=".85"/>
+            <path d="M-5 96 Q15 89 35 96 T75 96 T125 94 V130 H-5 Z" fill="#0ea5e9" opacity=".85"/>
+        </g>
+        <path d="M44 30 V86 M44 30 H62 Q78 30 78 44 Q78 58 62 58 H44 M62 58 L82 86"
+              fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M60 104 L60 96 M52 104 L68 104" stroke="#fde68a" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div class="brand">ROSARIO, CAVITE<small>concept emblem — not the official seal</small></div>
+    <h1>Emergency Response System</h1>
+    <p>A student concept for municipal emergency reporting</p>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#emergency">Emergency</a>
+    <a href="#contact">Location</a>
+</nav>
+
+<div class="hero" id="home">
+    <svg class="hero-img" viewBox="0 0 600 260" role="img" aria-label="Town skyline with a municipal hall, bay and sunset">
+        <defs>
+            <linearGradient id="csky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#1e3a8a"/>
+                <stop offset="0.5" stop-color="#60a5fa"/>
+                <stop offset="0.85" stop-color="#fdba74"/>
+                <stop offset="1" stop-color="#fde68a"/>
+            </linearGradient>
+            <linearGradient id="cbay" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#38bdf8"/>
+                <stop offset="1" stop-color="#0c4a6e"/>
+            </linearGradient>
+        </defs>
+        <rect width="600" height="260" fill="url(#csky)"/>
+        <circle cx="470" cy="120" r="30" fill="#fff3c4"/>
+        <g fill="#ffffff" opacity=".85">
+            <ellipse cx="90" cy="45" rx="36" ry="11"/><ellipse cx="120" cy="38" rx="26" ry="9"/>
+            <ellipse cx="330" cy="30" rx="32" ry="10"/>
+        </g>
+
+        <!-- far buildings -->
+        <g fill="#93a8d6" opacity=".8">
+            <rect x="20" y="110" width="30" height="80"/>
+            <rect x="52" y="90" width="26" height="100"/>
+            <rect x="80" y="120" width="34" height="70"/>
+            <rect x="400" y="100" width="28" height="90"/>
+            <rect x="430" y="125" width="34" height="65"/>
+            <rect x="540" y="105" width="30" height="85"/>
+        </g>
+
+        <!-- municipal hall -->
+        <g>
+            <rect x="170" y="120" width="220" height="70" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+            <polygon points="160,122 280,88 400,122" fill="#1e3a8a"/>
+            <rect x="262" y="52" width="36" height="40" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+            <polygon points="258,54 280,32 302,54" fill="#1e3a8a"/>
+            <line x1="280" y1="32" x2="280" y2="16" stroke="#475569" stroke-width="2"/>
+            <rect x="280" y="16" width="16" height="9" fill="#ef4444"/>
+            <g fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5">
+                <rect x="186" y="132" width="9" height="58"/><rect x="214" y="132" width="9" height="58"/>
+                <rect x="237" y="132" width="9" height="58"/><rect x="314" y="132" width="9" height="58"/>
+                <rect x="337" y="132" width="9" height="58"/><rect x="365" y="132" width="9" height="58"/>
+            </g>
+            <rect x="264" y="148" width="32" height="42" fill="#7c4a1d"/>
+            <circle cx="280" cy="75" r="9" fill="#fef3c7" stroke="#94a3b8" stroke-width="1.5"/>
+        </g>
+
+        <!-- ground & bay -->
+        <rect y="190" width="600" height="14" fill="#64748b"/>
+        <rect y="204" width="600" height="56" fill="url(#cbay)"/>
+        <g fill="none" stroke="#e0f2fe" stroke-width="2" opacity=".65" stroke-linecap="round">
+            <path d="M30 222 q8 -5 16 0 t16 0 t16 0"/><path d="M200 236 q8 -5 16 0 t16 0 t16 0"/>
+            <path d="M400 224 q8 -5 16 0 t16 0 t16 0"/><path d="M520 240 q8 -5 16 0 t16 0"/>
+        </g>
+
+        <!-- ambulance -->
+        <g transform="translate(40,168)">
+            <rect x="0" y="0" width="52" height="22" rx="4" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+            <rect x="52" y="6" width="18" height="16" rx="3" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+            <rect x="56" y="9" width="10" height="7" fill="#7dd3fc"/>
+            <rect x="20" y="5" width="12" height="3.5" fill="#dc2626"/><rect x="24" y="1" width="4" height="12" fill="#dc2626"/>
+            <circle cx="14" cy="23" r="5" fill="#1f2937"/><circle cx="58" cy="23" r="5" fill="#1f2937"/>
+            <rect x="26" y="-5" width="8" height="5" fill="#ef4444"/>
+        </g>
+
+        <!-- fire truck -->
+        <g transform="translate(470,168)">
+            <rect x="0" y="0" width="64" height="22" rx="4" fill="#dc2626"/>
+            <rect x="64" y="5" width="20" height="17" rx="3" fill="#dc2626"/>
+            <rect x="68" y="8" width="11" height="7" fill="#bae6fd"/>
+            <rect x="6" y="-4" width="40" height="4" fill="#fbbf24"/>
+            <circle cx="14" cy="23" r="5" fill="#1f2937"/><circle cx="72" cy="23" r="5" fill="#1f2937"/>
+        </g>
+    </svg>
+
+    <h2>Welcome</h2>
+    <p>
+        This project shows how a municipality can receive emergency reports from residents,
+        locate them on a map, and give its response team a live queue of what needs
+        attention first.
+    </p>
+    <a class="emergency-link" href="emergency.html">🚨 Send an Emergency Report</a>
+</div>
+
+<section id="about">
+    <h2>About this project</h2>
+    <p style="line-height:1.7">
+        In any growing town, emergencies can happen in many places at once. Residents may not know
+        who to call, and responders may not know exactly where to send help.
+        This concept lets anyone report an emergency with their location, and lets the
+        municipality's response team see every report in order and mark it as Waiting, On-going, or Done.
+    </p>
+    <div class="cards">
+        <div class="card"><span class="icon">📍</span><h3>Location included</h3>Reports can carry GPS coordinates so responders know where to go.</div>
+        <div class="card"><span class="icon">📋</span><h3>Live queue</h3>Responders see reports in order, with Waiting, On-going and Done lists.</div>
+        <div class="card"><span class="icon">🔒</span><h3>Private dashboard</h3>Only authorized response staff can log in and view the reports.</div>
+    </div>
+</section>
+
+<section id="services">
+    <h2>Emergency types handled</h2>
+    <div class="cards">
+        <div class="card"><span class="icon">🚑</span><h3>Medical</h3>Injury, sudden illness, or a person who needs urgent medical help.</div>
+        <div class="card"><span class="icon">🔥</span><h3>Fire</h3>Fire or smoke in a house, building, or open area.</div>
+        <div class="card"><span class="icon">🚗</span><h3>Road accident</h3>Vehicle collisions and road incidents that need help or traffic control.</div>
+        <div class="card"><span class="icon">🚓</span><h3>Crime / security</h3>Theft, violence, or any threat to public safety.</div>
+        <div class="card"><span class="icon">🌊</span><h3>Flood / disaster</h3>Flooding, landslides, and other disaster situations.</div>
+    </div>
+</section>
+
+<div class="emergency-section" id="emergency">
+    <div class="emergency-wrap">
+        <h2>🚨 Emergency Report</h2>
+        <p style="line-height:1.6">
+            Choose the type of emergency, add your name and location, and send the report
+            straight to the municipal emergency response team.
+        </p>
+        <div class="emergency-types">
+            <div class="etype"><span>🚑</span>Medical</div>
+            <div class="etype"><span>🔥</span>Fire</div>
+            <div class="etype"><span>🚗</span>Accident</div>
+            <div class="etype"><span>🚓</span>Crime</div>
+            <div class="etype"><span>🌊</span>Flood</div>
+        </div>
+        <a class="emergency-link" href="emergency.html">Send an Emergency Report →</a>
+        <p style="font-size:13px;margin-bottom:0">If anyone is in immediate danger, also call 911.</p>
+    </div>
+</div>
+
+<section id="contact">
+    <h2>Location</h2>
+    <p style="line-height:1.7">
+        This concept is built for Rosario, Cavite. For official services and
+        announcements, please visit the Municipal Government's official channels.
+    </p>
+    <a class="btn" href="https://www.google.com/maps?q=14.416718,120.8547068" target="_blank" rel="noopener noreferrer">📍 View Rosario on Google Maps</a>
+</section>
+
+<footer>
+    Student concept project for a school requirement.<br>
+    Not affiliated with, or endorsed by, the Municipal Government of Rosario, Cavite.
+</footer>
+</body>
+</html>
